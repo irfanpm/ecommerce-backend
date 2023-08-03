@@ -8,6 +8,11 @@ adminrouter.get('/admin/users/:id',admincontroller.user)
 adminrouter.get('/admin/products',admincontroller.products)
 adminrouter.get('/admin/products/category/:categoryname',admincontroller.categoryproduct)
 adminrouter.get('/admin/products/:id',admincontroller.product)
+adminrouter.post('/admin/products',admincontroller.addproduct)
+adminrouter.put('/admin/products',admincontroller.updateproduct)
+adminrouter.delete('/admin/products',admincontroller.deleteproduct)
+
+
 
 
 
