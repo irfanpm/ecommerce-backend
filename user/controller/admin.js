@@ -1,6 +1,8 @@
 var userSchema = require("../MODELS/userdb");
 var jwt = require("jsonwebtoken");
 var productSchema = require("../MODELS/productdb");
+const { authschema,auth_productschema } = require("./validation_schema");
+
 
 module.exports = {
 

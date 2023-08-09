@@ -1,7 +1,7 @@
 var express = require('express')
  var adminrouter = express.Router()
-var admincontroller = require('../controller/controlleradmin')
-var authjwt = require('../middleware/authenticationadmin')
+var admincontroller = require('../controller/admin')
+var authjwt = require('../middleware/authentication_admin')
 
 adminrouter.post('/admin/login',admincontroller.login)
 adminrouter.get('/admin/users',authjwt,admincontroller.users)

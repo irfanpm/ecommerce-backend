@@ -1,7 +1,7 @@
 var express =require("express")
 var userrouter = express.Router()
-var controller = require('../controller/controlleruser')
-var authjwt = require('../middleware/authentication')
+var controller = require('../controller/user')
+var authjwt = require('../middleware/authentication_user')
 
 
 userrouter.post('/users/register',controller.register)
