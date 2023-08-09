@@ -3,11 +3,12 @@ var jwt = require("jsonwebtoken");
 var productSchema = require("../MODELS/productdb");
 
 module.exports = {
+
   login: async (req, res) => {
     try {
       const admin = {
         username: "admin",
-        password: "admin",
+        password: "admin"
       };
       const { Username, Password } = req.body;
 
@@ -15,7 +16,7 @@ module.exports = {
         let resp = {
           id: admin.username,
         };
-        let token = jwt.sign(resp, "adminsecret", { expiresIn: 86400 });
+        let token = jwt.sign(resp,"adminsecret", { expiresIn: 86400 });
         res
           .status(200)
           .json({
@@ -29,20 +30,7 @@ module.exports = {
     }
   },
 
-  verifyToken: (req, res, next) => {
-    let authHeader = req.headers.authorization;
-    if (authHeader == undefined) {
-      res.status(401).send({ error: "no tocken provider" });
-    }
-    let token = authHeader.split(" ")[1];
-    jwt.verify(token, "adminsecret", function (err, decoded) {
-      if (err) {
-        res.status(500).send({ error: "authentication failed" });
-      } else {
-        next();
-      }
-    });
-  },
+  
   users: async (req, res) => {
     const users = await userSchema.find();
 
@@ -73,6 +61,7 @@ module.exports = {
     const categoryprd = await productSchema.find({
       category: req.params.categoryname,
     });
+    
     if (categoryprd.length != 0) {
       res.status(200).json({
         status: "success",

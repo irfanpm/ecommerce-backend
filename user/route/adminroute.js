@@ -1,9 +1,10 @@
 var express = require('express')
  var adminrouter = express.Router()
 var admincontroller = require('../controller/controlleradmin')
+var authjwt = require('../middleware/authenticationadmin')
 
 adminrouter.post('/admin/login',admincontroller.login)
-adminrouter.get('/admin/users',admincontroller.users)
+adminrouter.get('/admin/users',authjwt,admincontroller.users)
 adminrouter.get('/admin/users/:id',admincontroller.user)
 adminrouter.get('/admin/products',admincontroller.products)
 adminrouter.get('/admin/products/category/:categoryname',admincontroller.categoryproduct)
