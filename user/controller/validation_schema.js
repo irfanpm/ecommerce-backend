@@ -8,11 +8,12 @@ const authschema = joi.object({
 
 })
 const auth_productschema= joi.object({
-    title:joi.string().required(),
-    description:joi.string().required(),
-    price:joi.number().required(),
-    image:joi.string().required(),
-    category:joi.string().required()
+    id:joi.string(),
+    title:joi.string(),
+    description:joi.string(),
+    price:joi.number(),
+    image:joi.string(),
+    category:joi.string(),
 })
 module.exports={
     authschema,

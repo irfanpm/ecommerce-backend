@@ -87,7 +87,18 @@ module.exports = {
     }
   },
   addproduct: async (req, res) => {
-    const { title, description, image, price, category } = req.body;
+    const {error,value}=await auth_productschema.validate(req.body)
+    const { title, description, image, price, category } = value;
+
+
+    if (error) {
+      res.status(422).json({
+        status: "error",
+        message: error.details[0].message,
+      });
+    } else {
+
+
     await productSchema.create({
       title: title,
       description: description,
@@ -99,9 +110,19 @@ module.exports = {
       status: "success",
       message: "Successfully created a product.",
     });
+  }
   },
   updateproduct: async (req, res) => {
-    const { id, title, description, image, price, category } = req.body;
+    const {error,value}=await auth_productschema.validate(req.body) 
+    const { id, title, description, image, price, category } = value;
+
+
+    if (error) {
+      res.status(422).json({
+        status: "error",
+        message: error.details[0].message,
+      });
+    }else {
     await productSchema.findByIdAndUpdate(id, {
       $set: {
         title: title,
@@ -116,6 +137,7 @@ module.exports = {
       status: "success",
       message: "Successfully updated a product.",
     });
+  }
   },
   deleteproduct:async(req,res)=>{
     const {id}=req.body
@@ -136,6 +158,70 @@ module.exports = {
     
 
 
+  },
+  status:async(req,res)=>{
+    const aggregation=userSchema.aggregate([
+      {
+        $unwind:'$order'
+      },
+      {
+        $group:{
+          _id:null,
+          totalRevenue: { $sum: '$order.totalamount' },
+          totalItemsSold: { $sum: { $size: '$order.product' }}
+
+        }
+      }
+    ])
+    const result = await aggregation.exec();
+    const totalRevenue = result[0].totalRevenue;
+    const totalItemsSold = result[0].totalItemsSold;
+
+
+
+
+    res.json({
+      status: 'success',
+      message: 'Successfully fetched stats.',
+      data:{
+        'TotalRevenue': totalRevenue,
+        'Total Items Sold':totalItemsSold
+
+      }
+      })
+
+  },
+  orderdetails:async(req,res)=>{
+
+
+    const order =await userSchema.find({},"order")
+    orderDetails = order.filter((item)=>{
+     return item.order.length>0
+    })
+
+
+    res.json({
+      status: 'success',
+      message: 'Successfully fetched order detail.',
+      data: orderDetails
+      })
+
+    // const order=await userSchema.aggregate([{$group:{_id:'$order'}}])
+    // orderdetails=order.map((item)=>{
+    //   if(item._id.length>0){
+    //   return item
+    //   }
+      
+      
+    
+    // })
+    // res.send(orderdetails)
+
+
+
+
   }
+
+
 
 };

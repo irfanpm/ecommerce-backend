@@ -3,7 +3,7 @@ var jwt = require("jsonwebtoken");
 var productSchema = require("../MODELS/productdb");
 require("dotenv").config();
 const { authschema } = require("./validation_schema");
-
+let temp
 module.exports = {
   register: async (req, res) => {
     const { error, value } = await authschema.validate(req.body);
@@ -90,7 +90,6 @@ module.exports = {
   addcart: async (req, res) => {
     for (x of req.body.product) {
       const avilable = await productSchema.find({ _id: x.id });
-      console.log(avilable);
       if (avilable.length != 0) {
         await userSchema.updateOne(
           { _id: req.params.id },
@@ -145,37 +144,66 @@ module.exports = {
     } else {
       res.json("this product not avilable");
     }
+
+
   },
   stripe: async (req, res) => {
     const stripe = require("stripe")(process.env.STRIPE_KEY);
     const user = await userSchema.find({ _id: req.params.id }).populate("cart");
     const cartitem = user[0].cart.map((item) => {
+      
       return {
+       
+        
         price_data: {
           currency: "usd",
           product_data: {
             name: item.title,
             description: item.description,
           },
-          unit_amount: item.price * 100,
+          unit_amount: Math.round(item.price * 100),
         },
         quantity: 1,
       };
+      
     });
     console.log(cartitem);
+    if(cartitem!=0){
+   
 
     const session = await stripe.checkout.sessions.create({
       line_items: cartitem,
       mode: "payment",
-      success_url: `http://127.0.0.1:9000/api/users/payment/sucess`,
+      success_url: `http://127.0.0.1:9000/api/users/payment/success`,
       cancel_url: `http://127.0.0.1:9000/api/users/payment/cancel`,
     });
+    temp={
+      cartitem:user[0].cart,
+      id:req.params.id,
+      paymentid:session.id,
+      amount:session.amount_total/100
+
+     }
+     console.log(temp);
+    //  console.log(session)
+
     res.send({ url: session.url });
+    }else{
+      res.send("user no cart item")
+    }
+    
   },
-  success: async (req, res) => {
+  sucess: async (req, res) => {
+    const user = await userSchema.find({_id:temp.id})
+     console.log(user); 
+     if(user.length!=0){
+        await userSchema.updateOne({_id:temp.id},{order:{product:temp.cartitem,date:new Date(),orderid:Math.random(),paymentid:temp.paymentid,totalamount:temp.amount   }})
+
+     }
     res.json("sucess");
   },
   cancel: async (req, res) => {
     res.json("cancel");
   },
+
 };
