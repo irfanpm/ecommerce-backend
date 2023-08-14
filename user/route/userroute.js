@@ -15,9 +15,9 @@ userrouter.get('/users/:id/cart',authjwt,errormiddle(controller.cartview))
 userrouter.post('/users/:id/wishlists',authjwt, errormiddle(controller.addwishlist))
 userrouter.get('/users/:id/wishlists',authjwt, errormiddle( controller.wishlistview))
 userrouter.delete('/users/:id/wishlists',authjwt,errormiddle(controller.wishlistdelete))
-userrouter.post('/payment/:id',controller.stripe)
-userrouter.get('/users/payment/success',controller.sucess)
-userrouter.post('/users/payment/cancel',controller.cancel)
+userrouter.post('/payment/:id',authjwt,errormiddle(controller.stripe))
+userrouter.get('/users/payment/success',authjwt,errormiddle(controller.sucess))
+userrouter.post('/users/payment/cancel',authjwt,errormiddle(controller.cancel))
 
 
 

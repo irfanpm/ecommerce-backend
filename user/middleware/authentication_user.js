@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken")
+require("dotenv").config();
+
 
 module.exports= (req, res, next) => {
     try {
@@ -7,7 +9,7 @@ module.exports= (req, res, next) => {
       res.status(401).send({ error: "no tocken provider" });
     }
     let token = authHeader.split(" ")[1];
-    jwt.verify(token, "secret", function (err, decoded) {
+    jwt.verify(token,process.env.ACESS_TOKEN_SECRET, function (err, decoded) {
       if (err) {
         res.status(500).send({ error: "authentication failed" });
       } else {

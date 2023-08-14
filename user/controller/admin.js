@@ -1,7 +1,7 @@
 var userSchema = require("../MODELS/userdb");
 var jwt = require("jsonwebtoken");
 var productSchema = require("../MODELS/productdb");
-const { authschema,auth_productschema } = require("./validation_schema");
+const { auth_productschema } = require("./validation_schema");
 
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
         let resp = {
           id: admin.username,
         };
-        let token = jwt.sign(resp,"adminsecret", { expiresIn: 86400 });
+        let token = jwt.sign(resp,process.env.ACESS_ADMINTOKEN_SECRET, { expiresIn: 86400 });
         res
           .status(200)
           .json({
@@ -206,16 +206,7 @@ module.exports = {
       data: orderDetails
       })
 
-    // const order=await userSchema.aggregate([{$group:{_id:'$order'}}])
-    // orderdetails=order.map((item)=>{
-    //   if(item._id.length>0){
-    //   return item
-    //   }
-      
-      
-    
-    // })
-    // res.send(orderdetails)
+  
 
 
 

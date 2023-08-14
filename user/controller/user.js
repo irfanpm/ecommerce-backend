@@ -21,8 +21,10 @@ module.exports = {
         Password: password,
 
       });
-          res.json("successfully");
-
+      res.status(200).json({
+        status: "success",
+        message: "successfully register ",
+      })
     }
 
   
@@ -30,8 +32,6 @@ module.exports = {
 
   login: async (req, res) => {
     const {error,value}=await authschema.validate(req.body)
-
-
     const { username, password } = value;
 
     
@@ -51,8 +51,13 @@ module.exports = {
       let resp = {
         id: login[0].id,
       };
-      let token = jwt.sign(resp, "secret", { expiresIn: 86400 });
-      res.send({ auth: true, token: token });
+      let token = jwt.sign(resp, process.env.ACESS_TOKEN_SECRET, { expiresIn: 86400 });
+      res.status(200).json({
+        status: "success",
+        message: "successfully login ",
+        auth: true,
+        token: token
+      })
     } else {
       res.json("this user not available");
     }
@@ -60,7 +65,13 @@ module.exports = {
   },
 
   products: async (req, res) => {
-    res.json(await productSchema.find());
+    const product= await productSchema.find()
+    res.status(200).json({
+      status: "success",
+      message: "successfully fetched user product details",
+      data: product,
+    })
+
   },
 
   productcategory: async (req, res) => {
@@ -70,8 +81,12 @@ module.exports = {
       category: product,
     });
     if (prd.length != 0) {
-      res.json(prd);
-    } else {
+      res.status(200).json({
+        status: "success",
+        message: "successfully fetched user product details",
+        data: prd,
+      })
+      } else {
       res.json("the product not available");
     }
   },
@@ -82,7 +97,11 @@ module.exports = {
       _id: product,
     });
     if (productdetail.length != 0) {
-      res.json(productdetail);
+      res.status(200).json({
+        status: "success",
+        message: "successfully fetched user product details",
+        data: productdetail,
+      })
     } else {
       res.json("this product is not avilable");
     }
@@ -95,8 +114,11 @@ module.exports = {
           { _id: req.params.id },
           { $push: { cart: x.id } }
         );
-        res.send("{status:sucess}");
-      } else {
+        res.status(200).json({
+          status: "success",
+          message: "successfully add cart",
+        })     
+       } else {
         res.send("this product not avilable");
       }
     }
@@ -105,8 +127,12 @@ module.exports = {
   cartview: async (req, res) => {
     const user = await userSchema.find({ _id: req.params.id }).populate("cart");
     if (user[0].cart.length != 0) {
-      res.json(user[0].cart);
-    } else {
+      res.status(200).json({
+        status: "success",
+        message: "successfully fetched user cart",
+        data: user[0].cart
+      })   
+     } else {
       res.json(" no product available");
     }
   },
@@ -118,7 +144,10 @@ module.exports = {
           { _id: req.params.id },
           { $push: { wishlist: prd[x] } }
         );
-        res.send("{status:sucess}");
+      res.status(200).json({
+        status: "success",
+        message: "successfully added product in wishlist",
+      })
       } else {
         res.send("{status:this product not available}");
       }
@@ -129,7 +158,11 @@ module.exports = {
       .find({ _id: req.params.id })
       .populate("wishlist");
 
-    res.send(user[0].wishlist);
+      res.status(200).json({
+        status: "success",
+        message: "successfully fetched user wishlist",
+        data: user[0].wishlist
+      })  
   },
 
   wishlistdelete: async (req, res) => {
@@ -140,8 +173,11 @@ module.exports = {
         { $pull: { wishlist: req.body.id } }
       );
 
-      res.json("{status: ‘success’}");
-    } else {
+      res.status(200).json({
+        status: "success",
+        message: "successfully fetched user cart",
+      })    
+      } else {
       res.json("this product not avilable");
     }
 
@@ -200,8 +236,11 @@ module.exports = {
         await userSchema.updateOne({_id:temp.id},{order:{product:temp.cartitem,date:new Date(),orderid:Math.random(),paymentid:temp.paymentid,totalamount:temp.amount   }})
 
      }
-    res.json("sucess");
-  },
+     res.status(200).json({
+      status: "success",
+      message: "successfully added in order",
+    })   
+   },
   cancel: async (req, res) => {
     res.json("cancel");
   },
