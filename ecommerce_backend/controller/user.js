@@ -220,8 +220,6 @@ module.exports = {
       amount:session.amount_total/100
 
      }
-     console.log(temp);
-    //  console.log(session)
 
     res.send({ url: session.url });
     }else{
@@ -231,9 +229,9 @@ module.exports = {
   },
   sucess: async (req, res) => {
     const user = await userSchema.find({_id:temp.id})
-     console.log(user); 
      if(user.length!=0){
-        await userSchema.updateOne({_id:temp.id},{order:{product:temp.cartitem,date:new Date(),orderid:Math.random(),paymentid:temp.paymentid,totalamount:temp.amount   }})
+        await userSchema.updateOne({_id:temp.id},{$push:{order:{product:temp.cartitem,date:new Date(),orderid:Math.random(),paymentid:temp.paymentid,totalamount:temp.amount   }}})
+        await userSchema.updateOne({_id:temp.id},{cart:[]})
 
      }
      res.status(200).json({

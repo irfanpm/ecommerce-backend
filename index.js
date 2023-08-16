@@ -2,8 +2,8 @@ var express =require('express')
 const api = express()
 const bodyparser = require('body-parser')
 const  mongoose  = require('mongoose')
-const userroute = require('./user/route/userroute')
-const adminroute=require('./user/route/adminroute')
+const userroute = require('./ecommerce_backend/route/userroute')
+const adminroute=require('./ecommerce_backend/route/adminroute')
 
 api.use(bodyparser.json())
 
